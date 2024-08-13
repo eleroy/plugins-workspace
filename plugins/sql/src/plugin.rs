@@ -14,7 +14,7 @@ pub use sqlx::sqlite::{
 use sqlx::{
     error::BoxDynError,
     migrate::{
-        MigrateDatabase, Migration as SqlxMigration, MigrationSource, MigrationType, Migrator,
+        Migration as SqlxMigration, MigrationSource, MigrationType, Migrator,
     },
     Column, Pool, QueryBuilder, Row,
 };

@@ -28,6 +28,32 @@ Also allows to load or close a connection.
 <tr>
 <td>
 
+`sql:allow-batch-insert`
+
+</td>
+<td>
+
+Enables the batch_insert command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`sql:deny-batch-insert`
+
+</td>
+<td>
+
+Denies the batch_insert command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 `sql:allow-close`
 
 </td>

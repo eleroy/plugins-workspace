@@ -295,6 +295,20 @@
       "type": "string",
       "oneOf": [
         {
+          "description": "allow-batch-insert -> Enables the batch_insert command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "allow-batch-insert"
+          ]
+        },
+        {
+          "description": "deny-batch-insert -> Denies the batch_insert command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "deny-batch-insert"
+          ]
+        },
+        {
           "description": "allow-close -> Enables the close command without any pre-configured scope.",
           "type": "string",
           "enum": [

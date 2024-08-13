@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-batch-insert"
+description = "Enables the batch_insert command without any pre-configured scope."
+commands.allow = ["batch_insert"]
+
+[[permission]]
+identifier = "deny-batch-insert"
+description = "Denies the batch_insert command without any pre-configured scope."
+commands.deny = ["batch_insert"]
