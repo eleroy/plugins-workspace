@@ -2,4 +2,4 @@
 single-instance: patch
 ---
 
-Fixed an issue that caused `null pointer dereference occurred` errors on rust nightly.
+Fixed `null pointer dereference` panic on rust nightly on Windows.
