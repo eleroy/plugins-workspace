@@ -45,12 +45,41 @@ export default class Database {
    * const db = await Database.load("sqlite:test.db");
    * ```
    */
-  static async load(path: string, encryption_key: string): Promise<Database> {
+  static async load(path: string): Promise<Database> {
     const _path = await invoke<string>("plugin:sql|load", {
-      params:{
+      db: path,
+    });
+
+    return new Database(_path);
+  }
+
+  /**
+   * **load_with_options**
+   *
+   * Same as load - A static initializer which connects to the underlying database and
+   * returns a `Database` instance once a connection to the database is established. -
+   * it accepts options object instead of using global options
+   *
+   * # Sqlite
+   *
+   * The path is relative to `tauri::path::BaseDirectory::App` and must start with `sqlite:`.
+   *
+   * @example
+   * ```ts
+   * const db = await Database.load_with_options("sqlite:test.db", {encryption_key: "my_key"} );
+   * ```
+   */
+  static async load_with_options(
+    path: string,
+    options: {
+      encryption_key: string;
+    },
+  ): Promise<Database> {
+    const _path = await invoke<string>("plugin:sql|load_with_options", {
+      params: {
         db: path,
-        encryption_key
-      }
+        encryption_key: options.encryption_key,
+      },
     });
 
     return new Database(_path);
