@@ -187,6 +187,45 @@ async fn load<R: Runtime>(
     } else {
         SqliteConnectOptions::new()
     };
+
+    let pool = if !options.clone().get_filename().starts_with("sqlx-in-memory") {
+        let fqdb = {
+            create_dir_all(app_path(&app)).expect("Problem creating App directory!");
+            path_mapper(app_path(&app), &db)
+        };
+        Pool::connect_with(options.filename(&fqdb).create_if_missing(true)).await?
+    } else {
+        Pool::connect_with(options).await?
+    };
+
+    if let Some(migrations) = migrations.0.lock().await.remove(&db) {
+        let migrator = Migrator::new(migrations).await?;
+        migrator.run(&pool).await?;
+    }
+
+    db_instances.0.lock().await.insert(db.clone(), pool);
+    Ok(db)
+}
+
+#[derive(Deserialize)]
+pub struct LoadWithOptionsParams {
+    db: String,
+    encryption_key: String,
+}
+
+#[cfg(feature = "sqlite")]
+#[command]
+async fn load_with_options<R: Runtime>(
+    #[allow(unused_variables)] app: AppHandle<R>,
+    db_instances: State<'_, DbInstances>,
+    migrations: State<'_, Migrations>,
+    params: LoadWithOptionsParams,
+) -> Result<String> {
+    let db = params.db;
+    let encryption_key = params.encryption_key;
+
+    let options = SqliteConnectOptions::new().pragma("key", encryption_key);
+
     let pool = if !options.clone().get_filename().starts_with("sqlx-in-memory") {
         let fqdb = {
             create_dir_all(app_path(&app)).expect("Problem creating App directory!");
