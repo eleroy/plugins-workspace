@@ -45,9 +45,12 @@ export default class Database {
    * const db = await Database.load("sqlite:test.db");
    * ```
    */
-  static async load(path: string): Promise<Database> {
+  static async load(path: string, encryption_key: string): Promise<Database> {
     const _path = await invoke<string>("plugin:sql|load", {
-      db: path,
+      params:{
+        db: path,
+        encryption_key
+      }
     });
 
     return new Database(_path);
