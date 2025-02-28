@@ -155,6 +155,12 @@ impl MigrationSource<'static> for MigrationList {
     }
 }
 
+#[derive(Deserialize)]
+pub struct LoadParams {
+    db: String,
+    encryption_key: String,
+}
+
 #[cfg(not(feature = "sqlite"))]
 #[command]
 async fn load<R: Runtime>(
@@ -180,13 +186,17 @@ async fn load<R: Runtime>(
     db_instances: State<'_, DbInstances>,
     migrations: State<'_, Migrations>,
     sqlite_options: State<'_, SqlLiteOptionStore>,
-    db: String,
+    params: LoadParams,
 ) -> Result<String> {
+    let db = params.db;
+    let encryption_key = params.encryption_key;
+
     let options = if let Some(options) = sqlite_options.0.lock().await.remove(&db) {
         options
     } else {
-        SqliteConnectOptions::new()
+        SqliteConnectOptions::new().pragma("key", encryption_key)
     };
+
     let pool = if !options.clone().get_filename().starts_with("sqlx-in-memory") {
         let fqdb = {
             create_dir_all(app_path(&app)).expect("Problem creating App directory!");
